@@ -1,6 +1,9 @@
 'use client';
 
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+
 import axios from 'axios';
 
 import { toast, ToastContainer } from 'react-toastify';
@@ -8,6 +11,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default function ProfilePage() {
   const router = useRouter();
+
+  const [data, setData] = useState<any>(null);
 
   const onLogout = async () => {
     const response = await axios.get('/api/users/logout');
@@ -18,6 +23,19 @@ export default function ProfilePage() {
         router.push('/login');
       },
     });
+  };
+
+  const getUserDetails = async () => {
+    try {
+      const response = await axios.get('/api/users/me');
+      console.log('User details', response.data);
+      setData(response.data.data);
+    } catch (error: any) {
+      console.error('User details error', error);
+      toast.error(error.message, {
+        autoClose: 2000,
+      });
+    }
   };
 
   return (
@@ -32,11 +50,19 @@ export default function ProfilePage() {
       <h1>Profile</h1>
       <hr />
       <p>Profile page</p>
+      <h2 className='p-3 rounded bg-green-500'>
+        {data ? <Link href={`/profile/${data._id}`}>{data.username}</Link> : 'Nothing !'}
+      </h2>
       <hr />
       <button
         onClick={onLogout}
         className='bg-blue-500 hover:bg-blue-700 text-white font-bold mt-4 py-2 px-4 rounded'>
         Logout
+      </button>
+      <button
+        onClick={getUserDetails}
+        className='bg-green-500 hover:bg-green-700 text-white font-bold mt-4 py-2 px-4 rounded'>
+        Get User Details
       </button>
     </div>
   );
