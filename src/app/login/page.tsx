@@ -1,21 +1,71 @@
 'use client';
 
 import Link from 'next/link';
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Axios } from 'axios';
+import axios from 'axios';
+
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function LoginPage() {
-  const [user, setUser] = React.useState({
+  const router = useRouter();
+
+  const [buttonDisabled, setButtonDisabled] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  const [user, setUser] = useState({
     email: '',
     password: '',
   });
 
-  const onLogin = async () => {};
+  const onLogin = async () => {
+    const toastId = toast.loading('Please wait...');
+    setLoading(true);
+
+    try {
+      const response = await axios.post('/api/users/login', user);
+      console.log('Login success', response.data);
+      toast.update(toastId, {
+        render: response.data.message,
+        type: 'success',
+        isLoading: false,
+        autoClose: 2000,
+        onClose: () => {
+          router.push('/profile');
+        },
+      });
+    } catch (error: any) {
+      console.error('Login failed', error.response);
+      toast.update(toastId, {
+        render: error.response.data.error,
+        type: 'error',
+        isLoading: false,
+        autoClose: 2000,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user.email.length > 0 && user.password.length > 0) {
+      setButtonDisabled(false);
+    } else {
+      setButtonDisabled(true);
+    }
+  }, [user]);
 
   return (
     <div className='flex flex-col items-center justify-center min-h-screen py-2'>
-      <h1 className='text-center text-white text-2xl'>Login</h1>
+      <ToastContainer
+        position='top-center'
+        hideProgressBar={true}
+        newestOnTop={true}
+        limit={3}
+        theme='light'
+      />
+      <h1 className='text-center text-white text-2xl'>{loading ? '' : 'Login'}</h1>
       <hr />
       <label htmlFor='email'>email</label>
       <input
@@ -37,6 +87,7 @@ export default function LoginPage() {
       />
       <button
         onClick={onLogin}
+        disabled={buttonDisabled}
         className='p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600'>
         Login
       </button>

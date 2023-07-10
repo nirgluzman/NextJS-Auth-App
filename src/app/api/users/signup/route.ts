@@ -14,8 +14,7 @@ export async function POST(req: NextRequest) {
     const { username, email, password } = reqBody;
 
     // check if user exists
-    const user = await User.findOne({ email }).exec();
-
+    const user = await User.findOne({ email });
     if (user) {
       return NextResponse.json(
         { message: 'Something went wrong', error: 'Email already exists' },
@@ -38,11 +37,11 @@ export async function POST(req: NextRequest) {
     const savedUser = await newUser.save(); // save user to database
     console.log(savedUser);
     return NextResponse.json(
-      { message: 'User details saved in the database', success: true, data: savedUser },
+      { message: 'User details saved in the database', success: true },
       { status: 201 }
     );
   } catch (error: any) {
-    console.error('Error creating new User:', error);
+    console.error('signup route - error:', error);
 
     let errorMessage = 'Error!!';
     switch (error.name) {

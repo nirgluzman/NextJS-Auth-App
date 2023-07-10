@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
@@ -11,10 +11,10 @@ import 'react-toastify/dist/ReactToastify.css';
 export default function SignupPage() {
   const router = useRouter();
 
-  const [buttonDisabled, setButtonDisabled] = React.useState(true);
-  const [loading, setLoading] = React.useState(false);
+  const [buttonDisabled, setButtonDisabled] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  const [user, setUser] = React.useState({
+  const [user, setUser] = useState({
     username: '',
     email: '',
     password: '',
@@ -50,7 +50,7 @@ export default function SignupPage() {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (user.username.length > 0 && user.email.length > 0 && user.password.length > 0) {
       setButtonDisabled(false);
     } else {

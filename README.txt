@@ -10,7 +10,10 @@ https://www.youtube.com/watch?v=2RxaJrltJKo (Signup and login)
 
 https://github.com/hiteshchoudhary/nextjs-fullstack-auth
 
-React notification pop-ups
+React notifications
 https://react-hot-toast.com/
 https://blog.logrocket.com/using-react-toastify-style-toast-messages/
 https://fkhadra.github.io/react-toastify/introduction/
+
+Web Dev Simplified
+https://www.youtube.com/watch?v=mbsmsi7l3r4 (JWT)
