@@ -11,7 +11,7 @@ connectToDatabase();
 export async function POST(req: NextRequest) {
   try {
     const reqBody = await req.json();
-    console.log('login route - reqBody:', reqBody);
+    console.log('login route - reqBody', reqBody);
     const { email, password } = reqBody;
 
     // check if user exists
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
       throw new Error('ACCESS_TOKEN_SECRET is not defined');
     }
     const accessToken = await jwt.sign(tokenData, ACCESS_TOKEN_SECRET, { expiresIn: '1m' });
-    console.log('login route - accessToken:', accessToken);
+    console.log('login route - accessToken', accessToken);
 
     const response = NextResponse.json(
       {
@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
     // return response
     return response;
   } catch (error: any) {
-    console.log('login route - error:', error);
+    console.error('login route - error', error);
     return NextResponse.json(
       { message: 'Something went wrong', error: error.message },
       { status: 500 }

@@ -10,7 +10,7 @@ connectToDatabase();
 export async function POST(req: NextRequest) {
   try {
     const reqBody = await req.json();
-    console.log('signup route - reqBody:', reqBody);
+    console.log('signup route - reqBody', reqBody);
     const { username, email, password } = reqBody;
 
     // check if user exists
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (error: any) {
-    console.error('signup route - error:', error);
+    console.error('signup route - error', error);
 
     let errorMessage = 'Error!!';
     switch (error.name) {
@@ -54,12 +54,12 @@ export async function POST(req: NextRequest) {
       case 'MongoServerError': // Error handling for duplicate email address
         if (error.code === 11000) {
           errorMessage = 'Email already exists';
-          console.log(`Duplicate Key Error: ${errorMessage}`);
+          console.error(`Duplicate Key Error: ${errorMessage}`);
         }
         break;
       default:
         errorMessage = error.message;
-        console.log(`Unknown Error: ${errorMessage}`);
+        console.error(`Unknown Error: ${errorMessage}`);
     }
     return NextResponse.json(
       { message: 'Something went wrong', error: errorMessage },
