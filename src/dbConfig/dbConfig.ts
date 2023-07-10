@@ -2,14 +2,20 @@ import mongoose from 'mongoose';
 
 const { MONGO_URI } = process.env;
 
-export function connectToDatabase() {
+const connectToDatabase = async () => {
   try {
-    const dbConnection = mongoose.createConnection(MONGO_URI!);
+    if (!MONGO_URI) {
+      throw new Error('MONGO_URI not found');
+    }
+    await mongoose.connect(MONGO_URI);
     console.log('Connected to database');
-
-    return dbConnection;
   } catch (error) {
-    console.log('Error connecting to database');
-    console.error(error);
+    if (error instanceof Error) {
+      console.error(`Error connecting to database: ${error.message}`);
+    } else {
+      console.error(`Unknown error: ${error}`);
+    }
   }
-}
+};
+
+export default connectToDatabase;

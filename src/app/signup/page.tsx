@@ -3,20 +3,71 @@
 import Link from 'next/link';
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { Axios } from 'axios';
+import axios from 'axios';
+
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function SignupPage() {
+  const router = useRouter();
+
+  const [buttonDisabled, setButtonDisabled] = React.useState(true);
+  const [loading, setLoading] = React.useState(false);
+
   const [user, setUser] = React.useState({
     username: '',
     email: '',
     password: '',
   });
 
-  const onSignup = async () => {};
+  const onSignup = async () => {
+    const toastId = toast.loading('Please wait...');
+    setLoading(true);
+
+    try {
+      const response = await axios.post('/api/users/signup', user);
+      console.log('Signup success', response.data);
+      toast.update(toastId, {
+        render: response.data.message,
+        type: 'success',
+        isLoading: false,
+        autoClose: 2000,
+        onClose: () => {
+          router.push('/login');
+        },
+      });
+    } catch (error: any) {
+      console.error('Signup failed', error.response);
+
+      toast.update(toastId, {
+        render: error.response.data.error,
+        type: 'error',
+        isLoading: false,
+        autoClose: 2000,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
+    if (user.username.length > 0 && user.email.length > 0 && user.password.length > 0) {
+      setButtonDisabled(false);
+    } else {
+      setButtonDisabled(true);
+    }
+  }, [user]);
 
   return (
     <div className='flex flex-col items-center justify-center min-h-screen py-2'>
-      <h1 className='text-center text-white text-2xl'>Signup</h1>
+      <ToastContainer
+        position='top-center'
+        hideProgressBar={true}
+        newestOnTop={true}
+        limit={3}
+        theme='light'
+      />
+      <h1 className='text-center text-white text-2xl'>{loading ? '' : 'Signup'}</h1>
       <hr />
       <label htmlFor='username'>username</label>
       <input
@@ -47,6 +98,7 @@ export default function SignupPage() {
       />
       <button
         onClick={onSignup}
+        disabled={buttonDisabled}
         className='p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600'>
         Signup
       </button>
