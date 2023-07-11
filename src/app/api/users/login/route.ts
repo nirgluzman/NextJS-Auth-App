@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { refreshToken } from 'firebase-admin/app';
 
 connectToDatabase();
 
@@ -51,12 +52,16 @@ export async function POST(req: NextRequest) {
     };
 
     // create JWT token and save in user data
-    const { ACCESS_TOKEN_SECRET } = process.env;
-    if (!ACCESS_TOKEN_SECRET) {
-      throw new Error('ACCESS_TOKEN_SECRET is not defined');
+    const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = process.env;
+    if (!ACCESS_TOKEN_SECRET || !REFRESH_TOKEN_SECRET) {
+      throw new Error('ACCESS_TOKEN_SECRET or REFRESH_TOKEN_SECRET is not defined');
     }
+
     const accessToken = await jwt.sign(tokenData, ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+    const refreshToken = await jwt.sign(tokenData, REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
+
     console.log('login route - accessToken', accessToken);
+    console.log('login route - refreshToken', refreshToken);
 
     const response = NextResponse.json(
       {
@@ -68,6 +73,7 @@ export async function POST(req: NextRequest) {
 
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie
     response.cookies.set('accessToken', accessToken, { httpOnly: true });
+    response.cookies.set('refreshToken', refreshToken, { httpOnly: true });
 
     // return response
     return response;
