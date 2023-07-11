@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-    user.isVerified = true;
+    user.emailVerified = true;
     user.verifyEmailToken = undefined;
     user.verifyEmailTokenExpiry = undefined;
     await user.save();

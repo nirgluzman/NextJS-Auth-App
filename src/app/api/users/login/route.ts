@@ -18,7 +18,18 @@ export async function POST(req: NextRequest) {
     const user = await User.findOne({ email });
     if (!user) {
       return NextResponse.json(
-        { message: 'Something went wrong', error: 'User does not exist' },
+        {
+          message: 'Something went wrong',
+          error: 'Email or password you entered is incorrect',
+        },
+        { status: 400 }
+      );
+    }
+
+    // check if email has been verified
+    if (!user.emailVerified) {
+      return NextResponse.json(
+        { message: 'Something went wrong', error: 'Email has not been verified' },
         { status: 400 }
       );
     }
@@ -27,7 +38,7 @@ export async function POST(req: NextRequest) {
     const validPassword = await bcryptjs.compare(password, user.password);
     if (!validPassword) {
       return NextResponse.json(
-        { message: 'Something went wrong', error: 'Password is incorrect' },
+        { message: 'Something went wrong', error: 'Email or password you entered is incorrect' },
         { status: 400 }
       );
     }

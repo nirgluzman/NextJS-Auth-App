@@ -15,7 +15,7 @@ const UserSchema = new Schema({
     required: [true, 'password is missing or does not meet the complexity requirements'],
   },
   role: { type: String, enum: ['user', 'admin'], default: 'user' },
-  isVerified: { type: Boolean, default: false },
+  emailVerified: { type: Boolean, default: false },
   verifyEmailToken: { type: String, default: undefined }, // hashed userId
   verifyEmailTokenExpiry: { type: Date, default: undefined },
   forgotPasswordToken: { type: String, default: undefined },
