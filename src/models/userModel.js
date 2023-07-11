@@ -16,10 +16,10 @@ const UserSchema = new Schema({
   },
   role: { type: String, enum: ['user', 'admin'], default: 'user' },
   isVerified: { type: Boolean, default: false },
-  forgotPasswordToken: String,
-  forgotPasswordTokemExpiry: Date,
-  verifiedToken: String,
-  verifiedTokenExpiry: Date,
+  verifyEmailToken: { type: String, default: undefined }, // hashed userId
+  verifyEmailTokenExpiry: { type: Date, default: undefined },
+  forgotPasswordToken: { type: String, default: undefined },
+  forgotPasswordTokemExpiry: { type: Date, default: undefined },
 });
 
 // create a Mongoose model for the user data using the schema defined above

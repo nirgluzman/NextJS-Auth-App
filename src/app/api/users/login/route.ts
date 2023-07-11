@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     if (!ACCESS_TOKEN_SECRET) {
       throw new Error('ACCESS_TOKEN_SECRET is not defined');
     }
-    const accessToken = await jwt.sign(tokenData, ACCESS_TOKEN_SECRET, { expiresIn: '1m' });
+    const accessToken = await jwt.sign(tokenData, ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
     console.log('login route - accessToken', accessToken);
 
     const response = NextResponse.json(

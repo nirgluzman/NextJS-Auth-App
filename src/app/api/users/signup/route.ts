@@ -1,6 +1,8 @@
 import connectToDatabase from '@/dbConfig/dbConfig';
 import User from '@/models/userModel';
 
+import { sendEmail, EmailType } from '@/helpers/mailer';
+
 import { NextRequest, NextResponse } from 'next/server';
 
 import bcryptjs from 'bcryptjs';
@@ -25,7 +27,6 @@ export async function POST(req: NextRequest) {
     // hash password
     const salt = await bcryptjs.genSalt(10);
     const hashedPassword = await bcryptjs.hash(password, salt);
-    console.log(hashedPassword);
 
     // create newUser instance and save it to db
     const newUser = new User({
@@ -36,6 +37,14 @@ export async function POST(req: NextRequest) {
 
     const savedUser = await newUser.save(); // save user to database
     console.log(savedUser);
+
+    // send verification email
+    await sendEmail({
+      emailType: EmailType.VERIFY,
+      toEmail: savedUser.email,
+      userId: savedUser._id,
+    });
+
     return NextResponse.json(
       { message: 'User details saved in the database', success: true },
       { status: 201 }

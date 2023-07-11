@@ -6,7 +6,7 @@ export const getDataFromAccessToken = (token: string) => {
     const decodedToken: any = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!);
     return decodedToken.id;
   } catch (error: any) {
-    console.log(error);
+    console.error(error);
     return 'Token not valid';
   }
 };
