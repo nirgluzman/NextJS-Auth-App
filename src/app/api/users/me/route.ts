@@ -1,7 +1,7 @@
 import connectToDatabase from '@/dbConfig/dbConfig';
 import User from '@/models/userModel';
 
-import { getDataFromAccessToken } from '@/helpers/getDataFromAccessToken';
+import { getDataFromToken, TokenType } from '@/helpers/getDataFromToken';
 
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -10,7 +10,7 @@ connectToDatabase();
 export async function GET(req: NextRequest) {
   try {
     const accessToken = req.cookies.get('accessToken')?.value || '';
-    const userId = await getDataFromAccessToken(accessToken);
+    const userId = await getDataFromToken({ token: accessToken, tokenType: TokenType.ACCESS });
     const user = await User.findById(userId).select('-password');
     console.log('me route - user', user);
     return NextResponse.json({ message: 'User found', data: user }, { status: 200 });
