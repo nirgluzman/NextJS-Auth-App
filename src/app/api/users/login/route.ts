@@ -60,9 +60,6 @@ export async function POST(req: NextRequest) {
     const accessToken = await jwt.sign(tokenData, ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
     const refreshToken = await jwt.sign(tokenData, REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
 
-    console.log('login route - accessToken', accessToken);
-    console.log('login route - refreshToken', refreshToken);
-
     const response = NextResponse.json(
       {
         message: 'Login successful',

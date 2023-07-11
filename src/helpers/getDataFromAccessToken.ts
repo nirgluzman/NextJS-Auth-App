@@ -7,6 +7,6 @@ export const getDataFromAccessToken = (token: string) => {
     return decodedToken.id;
   } catch (error: any) {
     console.error(error);
-    return 'Token not valid';
+    throw new Error('Token not valid');
   }
 };

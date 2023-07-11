@@ -28,12 +28,16 @@ export default function ProfilePage() {
   const getUserDetails = async () => {
     try {
       const response = await axios.get('/api/users/me');
-      console.log('User details', response.data);
+      console.log('User profile details', response.data);
       setData(response.data.data);
     } catch (error: any) {
-      console.error('User details error', error);
-      toast.error(error.message, {
+      console.error('User profile details error', error.response);
+      toast.error(error.response.data.error, {
         autoClose: 2000,
+        onClose: async () => {
+          await axios.get('/api/users/logout');
+          router.push('/login');
+        },
       });
     }
   };
