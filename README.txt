@@ -11,6 +11,10 @@ https://www.youtube.com/watch?v=_BqkCRgCdng (User verification email)
 
 https://github.com/hiteshchoudhary/nextjs-fullstack-auth
 
+Refresh Token Rotation and Reuse Detection
+https://www.youtube.com/watch?v=s-4k5TcGKHg
+https://github.com/gitdagray/refresh_token_rotation/tree/main
+
 React notifications
 https://react-hot-toast.com/
 https://blog.logrocket.com/using-react-toastify-style-toast-messages/

@@ -20,6 +20,7 @@ const UserSchema = new Schema({
   verifyEmailTokenExpiry: { type: Date, default: undefined },
   forgotPasswordToken: { type: String, default: undefined },
   forgotPasswordTokemExpiry: { type: Date, default: undefined },
+  refreshToken: { type: String, default: undefined },
 });
 
 // create a Mongoose model for the user data using the schema defined above

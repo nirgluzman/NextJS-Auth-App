@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     // check if email has been verified
     if (!user.emailVerified) {
       return NextResponse.json(
-        { message: 'Something went wrong', error: 'Email has not been verified' },
+        { message: 'Something went wrong', error: 'Email verification is required' },
         { status: 400 }
       );
     }
@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
       email: user.email,
     };
 
-    // create JWT token and save in user data
+    // create JWT token
     const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = process.env;
     if (!ACCESS_TOKEN_SECRET || !REFRESH_TOKEN_SECRET) {
       throw new Error('ACCESS_TOKEN_SECRET or REFRESH_TOKEN_SECRET is not defined');
@@ -59,6 +59,10 @@ export async function POST(req: NextRequest) {
 
     const accessToken = await jwt.sign(tokenData, ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
     const refreshToken = await jwt.sign(tokenData, REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
+
+    // store refresh token in database
+    user.refreshToken = refreshToken;
+    await user.save();
 
     const response = NextResponse.json(
       {
@@ -69,8 +73,14 @@ export async function POST(req: NextRequest) {
     );
 
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie
-    response.cookies.set('accessToken', accessToken, { httpOnly: true });
-    response.cookies.set('refreshToken', refreshToken, { httpOnly: true });
+    response.cookies.set('accessToken', accessToken, {
+      httpOnly: true,
+      maxAge: 60 * 60 * 1000,
+    });
+    response.cookies.set('refreshToken', refreshToken, {
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000,
+    });
 
     // return response
     return response;
