@@ -1,3 +1,7 @@
+// Need to revise the code to support the token expired scenario.
+// In this case, jwt.verify() will decode the token even if it has expired. However, if the token has expired,
+// jwt.verify() will throw an error with the message “jwt expired”.
+
 import jwt from 'jsonwebtoken';
 
 export enum TokenType {
