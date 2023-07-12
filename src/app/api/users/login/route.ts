@@ -5,7 +5,6 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { refreshToken } from 'firebase-admin/app';
 
 connectToDatabase();
 
@@ -75,11 +74,11 @@ export async function POST(req: NextRequest) {
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie
     response.cookies.set('accessToken', accessToken, {
       httpOnly: true,
-      maxAge: 60 * 60 * 1000,
+      maxAge: 60 * 60, // 1 hour
     });
     response.cookies.set('refreshToken', refreshToken, {
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000,
+      maxAge: 24 * 60 * 60, // 24 hours (1 day)
     });
 
     // return response

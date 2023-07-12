@@ -1,26 +1,33 @@
-import { NextResponse } from 'next/server';
+// create a response with JSON body first then set the cookie
+// https://codethenporrada.xyz/how-to-set-a-cookie-using-nextjs-13-api-routes
 
-export async function GET() {
-  try {
-    const response = NextResponse.json(
-      {
-        message: 'Logout successful',
-        success: true,
-      },
-      { status: 200 }
-    );
+import connectToDatabase from '@/dbConfig/dbConfig';
+import User from '@/models/userModel';
 
-    // delete cookies
-    response.cookies.set('accessToken', '', { httpOnly: true, expires: new Date(0) });
-    response.cookies.set('refreshToken', '', { httpOnly: true, expires: new Date(0) });
+import { NextRequest, NextResponse } from 'next/server';
 
-    // return response
-    return response;
-  } catch (error: any) {
-    console.error('logout route - error', error);
-    return NextResponse.json(
-      { message: 'Something went wrong', error: error.message },
-      { status: 500 }
-    );
-  }
+connectToDatabase();
+
+export async function GET(req: NextRequest) {
+  // clear the refresh token stored in the database
+  const refreshToken = req.cookies.get('refreshToken')?.value || '';
+  const user = await User.findOne({ refreshToken }).select('-password');
+  user.refreshToken = undefined;
+  await user.save();
+
+  // set the JSON response body and status code
+  const res = NextResponse.json(
+    {
+      message: 'Logout successful',
+      success: true,
+    },
+    { status: 200 }
+  );
+
+  // clear the cookies on the response object
+  res.cookies.delete('accessToken');
+  res.cookies.delete('refreshToken');
+
+  // return the response object
+  return res;
 }
