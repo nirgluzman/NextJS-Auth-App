@@ -1,6 +1,10 @@
 // create a response with JSON body first then set the cookie
 // https://codethenporrada.xyz/how-to-set-a-cookie-using-nextjs-13-api-routes
 
+// code supports single device login.
+// to support multiple devices, we need to use a refreshToken array (i.e. token for each device)
+// https://github.com/gitdagray/refresh_token_rotation/blob/main/controllers/refreshTokenController.js
+
 import connectToDatabase from '@/dbConfig/dbConfig';
 import User from '@/models/userModel';
 
