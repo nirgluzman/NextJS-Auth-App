@@ -20,6 +20,10 @@ const UserSchema = new Schema({
   verifyEmailTokenExpiry: { type: Date, default: undefined },
   forgotPasswordToken: { type: String, default: undefined },
   forgotPasswordTokemExpiry: { type: Date, default: undefined },
+
+  // single refresh token for single device login scenario; login from another device triggers a token refresh.
+  // to enable multiple device login, refreshToken should be an array to store multiple tokens per each device.
+  // https://github.com/gitdagray/refresh_token_rotation/blob/main/controllers/refreshTokenController.js
   refreshToken: { type: String, default: undefined },
 });
 
