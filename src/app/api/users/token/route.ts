@@ -1,3 +1,6 @@
+// create a response with JSON body first then set the cookie
+// https://codethenporrada.xyz/how-to-set-a-cookie-using-nextjs-13-api-routes
+
 import connectToDatabase from '@/dbConfig/dbConfig';
 import User from '@/models/userModel';
 
@@ -9,14 +12,11 @@ import jwt from 'jsonwebtoken';
 
 connectToDatabase();
 
+// handle refresh token request
 export async function POST(req: NextRequest) {
   try {
     const refreshToken = req.cookies.get('refreshToken')?.value || '';
     const userId = await getDataFromToken({ token: refreshToken, tokenType: TokenType.REFRESH });
-
-    // delete cookies on client side
-    res.cookies.delete('accessToken');
-    res.cookies.delete('refreshToken');
 
     // find user by refresh token
     const foundUser = await User.findOne({ refreshToken }).select('-password');
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
       const hackedUser = await User.findById(userId).select('-password');
       hackedUser.refreshToken = undefined; // remove refresh token
       await hackedUser.save();
-      res = NextResponse.json(
+      const res = NextResponse.json(
         { message: 'Something went wrong', error: 'Revoked token reuse detection' },
         { status: 403 } // Forbidden
       );
@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
     await foundUser.save();
 
     // send the new access and refresh tokens back to client
-    res = NextResponse.json(
+    const res = NextResponse.json(
       {
         message: 'Token rotation successful',
         success: true,
@@ -72,10 +72,14 @@ export async function POST(req: NextRequest) {
     return res;
   } catch (error: any) {
     console.error('token route - error', error);
-    res = NextResponse.json(
+    const res = NextResponse.json(
       { message: 'Something went wrong', error: error.message },
       { status: 500 }
     );
+
+    // clear the cookies on the response object
+    res.cookies.delete('accessToken');
+    res.cookies.delete('refreshToken');
     return res;
   }
 }

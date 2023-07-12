@@ -12,7 +12,6 @@ export async function GET(req: NextRequest) {
     const accessToken = req.cookies.get('accessToken')?.value || '';
     const userId = await getDataFromToken({ token: accessToken, tokenType: TokenType.ACCESS });
     const user = await User.findById(userId).select('-password');
-    console.log('me route - user', user);
     return NextResponse.json({ message: 'User found', data: user }, { status: 200 });
   } catch (error: any) {
     console.error('me route - error', error.message);

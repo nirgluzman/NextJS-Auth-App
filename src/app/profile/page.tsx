@@ -15,14 +15,24 @@ export default function ProfilePage() {
   const [data, setData] = useState<any>(null);
 
   const onLogout = async () => {
-    const response = await axios.get('/api/users/logout');
-    console.log('Logout success', response.data);
-    toast.success(response.data.message, {
-      autoClose: 2000,
-      onClose: () => {
-        router.push('/login');
-      },
-    });
+    try {
+      const response = await axios.get('/api/users/logout');
+      console.log('Logout success', response.data);
+      toast.success(response.data.message, {
+        autoClose: 2000,
+        onClose: () => {
+          router.push('/login');
+        },
+      });
+    } catch (error: any) {
+      console.error('Logout error', error.response);
+      toast.error(`Logout with error: ${error.response.data.error}`, {
+        autoClose: 2000,
+        onClose: () => {
+          router.push('/login');
+        },
+      });
+    }
   };
 
   const getUserDetails = async () => {
