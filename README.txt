@@ -5,6 +5,7 @@ Source - NextJS fullstack course
 https://hiteshchoudhary.com/
 https://www.youtube.com/channel/UCXgGY0wkgOzynnHvSEVmE3A/videos (ALL videos)
 
+https://www.youtube.com/watch?v=eaQc7vbV4po (full course)
 https://www.youtube.com/watch?v=iPGXk-i-VYU (introduction)
 https://www.youtube.com/watch?v=2RxaJrltJKo (Signup and login)
 https://www.youtube.com/watch?v=_BqkCRgCdng (User verification email)
