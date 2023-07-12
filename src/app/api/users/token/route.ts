@@ -17,7 +17,7 @@ import jwt from 'jsonwebtoken';
 connectToDatabase();
 
 // handle refresh token request
-export async function GET(req: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
     const refreshToken = req.cookies.get('refreshToken')?.value || '';
     const userId = await getDataFromToken({ token: refreshToken, tokenType: TokenType.REFRESH });
