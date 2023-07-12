@@ -9,25 +9,33 @@ import { NextRequest, NextResponse } from 'next/server';
 connectToDatabase();
 
 export async function GET(req: NextRequest) {
-  // clear the refresh token stored in the database
-  const refreshToken = req.cookies.get('refreshToken')?.value || '';
-  const user = await User.findOne({ refreshToken }).select('-password');
-  user.refreshToken = undefined;
-  await user.save();
+  try {
+    // clear the refresh token stored in the database
+    const refreshToken = req.cookies.get('refreshToken')?.value || '';
+    const user = await User.findOne({ refreshToken }).select('-password');
+    user.refreshToken = undefined;
+    await user.save();
 
-  // set the JSON response body and status code
-  const res = NextResponse.json(
-    {
-      message: 'Logout successful',
-      success: true,
-    },
-    { status: 200 }
-  );
+    // set the JSON response body and status code
+    const res = NextResponse.json(
+      {
+        message: 'Logout successful',
+        success: true,
+      },
+      { status: 200 }
+    );
 
-  // clear the cookies on the response object
-  res.cookies.delete('accessToken');
-  res.cookies.delete('refreshToken');
+    // clear the cookies on the response object
+    res.cookies.delete('accessToken');
+    res.cookies.delete('refreshToken');
 
-  // return the response object
-  return res;
+    // return the response object
+    return res;
+  } catch (error: any) {
+    console.error('logout route - error', error);
+    return NextResponse.json(
+      { message: 'Something went wrong', error: error.message },
+      { status: 500 }
+    );
+  }
 }

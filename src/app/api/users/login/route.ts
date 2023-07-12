@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           message: 'Something went wrong',
-          error: 'Email or password you entered is incorrect',
+          error: 'Email or password is incorrect',
         },
         { status: 400 }
       );
